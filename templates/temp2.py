@@ -11,15 +11,13 @@ template = {
                     'code': '''
     fun {newFun}() {
         // This is new fun
-    }
-            '''
+    }'''
                 },
                 {
                     'type': 'insertBefore',
                     'patt': '''(class[\s\S]+{className}{[\s\S]+)\n}''',
                     'code': '''
-    val TAG = "{className}"
-            '''
+    val TAG = "{className}"'''
                 },
             ]
         }

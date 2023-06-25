@@ -32,12 +32,6 @@ class TemplateFrame(BaseFrame):
         ttk.Label(top, text=self.name, font='Arial 20').pack(
             side=tk.LEFT, pady=5, padx=10)
 
-        ttk.Button(top, text='preview', command=self.preview).pack(
-            side=tk.LEFT, pady=5, padx=(0, 10))
-
-        ttk.Button(top, text='generate', command=self.generate).pack(
-            side=tk.LEFT, pady=5, padx=(0, 10))
-
         ttk.Button(top, text='reload', command=self.reload).pack(
             side=tk.LEFT, pady=5, padx=(0, 10))
 
@@ -58,20 +52,35 @@ class TemplateFrame(BaseFrame):
 
         h = 20
 
-        f1 = ttk.LabelFrame(mid, text='Template')
+        f1 = ttk.Frame(mid)
         f1.grid(column=0, row=0, sticky=tk.NW)
 
+        f = ttk.Frame(f1)
+        f.pack(side=tk.TOP, fill=tk.X, expand=True)
+        ttk.Button(f, text='Template', state='disabled').pack(
+            side=tk.LEFT, padx=(10, 10))
+
         t1 = self.tempText = ScrolledText(
-            f1, height=h, bg=Theme.MainBg, fg=Theme.MainFg, font=TEMP_FONT, width=30)
-        t1.pack()
+            f1, height=h, bg=Theme.MainBg, fg=Theme.MainFg, insertbackground=Theme.MainFg, font=TEMP_FONT, width=30)
+        t1.pack(side=tk.TOP, fill=tk.X, expand=True)
         t1.insert(tk.END, getPatt(self.template))
 
-        f2 = ttk.LabelFrame(mid, text='Code')
+        f2 = ttk.Frame(mid)
         f2.grid(column=1, row=0, sticky=tk.NW)
 
+        f = ttk.Frame(f2)
+        f.pack(side=tk.TOP, fill=tk.X, expand=True)
+        ttk.Label(f, text='Code').pack(side=tk.LEFT, padx=(10, 10))
+
+        ttk.Button(f, text='preview', command=self.preview).pack(
+            side=tk.LEFT, padx=(0, 10))
+
+        ttk.Button(f, text='generate',
+                   command=self.generate).pack(side=tk.LEFT)
+
         t2 = self.codeText = ScrolledText(
-            f2, height=h, bg=Theme.MainBg, fg=Theme.MainFg, font=CODE_FONT)
-        t2.grid(column=1, row=0, sticky=tk.NW)
+            f2, height=h, bg=Theme.MainBg, fg=Theme.MainFg, insertbackground=Theme.MainFg, font=CODE_FONT)
+        t2.pack(side=tk.TOP, fill=tk.X, expand=True)
 
     def preview(self):
         self.codeText.delete('1.0', tk.END)
@@ -102,7 +111,15 @@ class TemplateFrame(BaseFrame):
         self.initCodeView()
 
     def generate(self):
-        pass
+        # check args
+        args = self.args
+        for k in args:
+            if len(args[k].get()) == 0:
+                self.codeText.insert('1.0', f'Warn: {k} is empty\n')
+                return
+
+        if not generate(self.template, {x: self.args[x].get() for x in self.args}):
+            self.codeText.insert('1.0', f'generate code fail\n')
 
 
 def getFrame(name: str, master) -> TemplateFrame:

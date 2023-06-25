@@ -14,8 +14,7 @@ template = {
 
     val h = "hello world adfja l;dkfjla dfjklad jfoaijdf asdjfaio jdf;ladjif osd"
 
-}
-            '''
+}'''
         },
         {
             'path': '{path}/{className}IF.kt',
@@ -29,8 +28,7 @@ template = {
 
     val h = "hello"
 
-}
-            '''
+}'''
         }
 
     ]

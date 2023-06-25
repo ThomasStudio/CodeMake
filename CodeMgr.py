@@ -125,3 +125,35 @@ def replaceArgs(s: str, args: dict):
         rs = rs.replace('{' + k + '}', args[k])
 
     return rs
+
+
+def generate(template: dict, args: dict) -> bool:
+    builtTemp = build(template, args)
+
+    if builtTemp['type'] == TemplateType.Create.value:
+        return generateNewFile(builtTemp)
+    elif builtTemp['type'] == TemplateType.Create.value:
+        return modifyFile(builtTemp)
+
+    return False
+
+
+def generateNewFile(builtTemp: dict):
+    for x in builtTemp['files']:
+        p = x['path']
+        code = x['code']
+
+        try:
+
+            with open(p, 'x', encoding='utf-8') as f:
+                f.write(code)
+
+        except Exception as e:
+            log(f'generateNewFile Error: {e}')
+            return False
+
+    return True
+
+
+def modifyFile(code: dict):
+    pass
