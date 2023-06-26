@@ -151,7 +151,8 @@ def generateNewFile(builtTemp: dict):
         code = x['code']
 
         try:
-            pt = os.path.dirname(p)
+            pt: str = os.path.dirname(p)
+            pt = pt.lower()
             if not os.path.exists(pt):
                 os.makedirs(pt)
 
