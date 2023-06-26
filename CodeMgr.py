@@ -6,6 +6,12 @@ import re
 
 from Util import *
 
+Patts = {
+    'Class': '''(class\s*?{className}[\s\S]*?{[\s\S]*?)\n}''',
+    'Fun': '''(fun\s*?{funName}[\s\S]*?{[\s\S]*?)\n}''',
+    'Interface': '''(interface\s*?{ifName}[\s\S]*?{[\s\S]*?)\n}''',
+}
+
 
 class TemplateType(Enum):
     Create = 'create'
@@ -174,7 +180,7 @@ def previewModified(builtTemp: dict) -> list:
 
             for op in x['operator']:
                 t = op['type']
-                patt = op['patt']
+                patt = rf"{op['patt']}"
                 code = op['code']
 
                 mt = re.findall(patt, orig)
