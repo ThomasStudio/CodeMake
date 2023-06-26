@@ -2,6 +2,7 @@ from enum import Enum
 from importlib import import_module, reload
 import copy
 import os
+import re
 
 from Util import *
 
@@ -132,7 +133,7 @@ def generate(template: dict, args: dict) -> bool:
 
     if builtTemp['type'] == TemplateType.Create.value:
         return generateNewFile(builtTemp)
-    elif builtTemp['type'] == TemplateType.Create.value:
+    elif builtTemp['type'] == TemplateType.Modify.value:
         return modifyFile(builtTemp)
 
     return False
@@ -155,5 +156,63 @@ def generateNewFile(builtTemp: dict):
     return True
 
 
-def modifyFile(code: dict):
-    pass
+def previewModified(builtTemp: dict) -> list:
+    '''
+    result : [{'path':'xxx', 'code': 'ccc'}, ...]
+    '''
+    rs = []
+
+    for x in builtTemp['files']:
+        p = x['path']
+        if not os.path.exists(p):
+            toast(f'{p} not exists')
+            return None
+
+        try:
+            with open(p, 'r', encoding='utf-8') as f:
+                orig = f.read()
+
+            for op in x['operator']:
+                t = op['type']
+                patt = op['patt']
+                code = op['code']
+
+                mt = re.findall(patt, orig)
+                if len(mt) == 0:
+                    continue
+
+                mt = mt[0]
+
+                if t == OperType.InsertAfter.value:
+                    orig = orig.replace(mt, mt + code)
+                elif t == OperType.InsertBefore.value:
+                    orig = orig.replace(mt, code + mt)
+                elif t == OperType.Replace.value:
+                    orig = orig.replace(mt, code)
+
+            rs.append({'path': p, 'code': orig})
+
+        except Exception as e:
+            log(f'generateNewFile Error: {e}')
+            return None
+
+    return rs
+
+
+def modifyFile(builtTemp: dict):
+    codePreview = previewModified(builtTemp)
+    if codePreview is None:
+        return False
+
+    for x in codePreview:
+
+        try:
+            p = x['path']
+            code = x['code']
+            with open(p, 'w', encoding='utf-8') as f:
+                f.write(code)
+        except Exception as e:
+            log(f'generateNewFile Error: {e}')
+            return False
+
+    return True

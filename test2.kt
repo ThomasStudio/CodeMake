@@ -8,4 +8,6 @@ fun t1(){
     
 }
 
-val t2 :String
+class Test() {
+
+}

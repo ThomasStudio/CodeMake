@@ -97,6 +97,18 @@ class TemplateFrame(BaseFrame):
             self.tempText.delete('1.0', tk.END)
             self.tempText.insert(tk.END, getPatt(tempBuilt))
 
+            builtRs = previewModified(tempBuilt)
+            if builtRs == None or len(builtRs) == 0:
+                self.codeText.insert(tk.END, 'Can not preview\n')
+                return
+
+            for x in builtRs:
+                p = x['path']
+                code = x['code']
+
+                self.codeText.insert(tk.END, p + '\n')
+                self.codeText.insert(tk.END, code + '\n\n')
+
     def getTemplate(self):
         temp = self.template = getTemplate(self.name)
         self.args = {x: tk.StringVar(value='') for x in temp['args']}
