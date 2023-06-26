@@ -151,6 +151,9 @@ def generateNewFile(builtTemp: dict):
         code = x['code']
 
         try:
+            pt = os.path.dirname(p)
+            if not os.path.exists(pt):
+                os.makedirs(pt)
 
             with open(p, 'x', encoding='utf-8') as f:
                 f.write(code)

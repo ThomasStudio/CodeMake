@@ -8,9 +8,10 @@ from BaseFrame import BaseFrame
 from CodeMgr import *
 from TemplateFrame import TemplateFrame, getFrame
 
-sys.path.append('templates')
+ROOT_PATH = os.path.dirname(os.path.abspath(__file__))
+TEMPLATE_PATH = ROOT_PATH + '/templates'
+sys.path.append(TEMPLATE_PATH)
 
-TEMPLATE_PATH = './templates'
 CODE = 'code '
 
 
