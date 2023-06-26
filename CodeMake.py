@@ -11,6 +11,7 @@ from TemplateFrame import TemplateFrame, getFrame
 sys.path.append('templates')
 
 TEMPLATE_PATH = './templates'
+CODE = 'code '
 
 
 class CodeMake(BaseFrame):
@@ -29,11 +30,14 @@ class CodeMake(BaseFrame):
         cb.current(0)
         cb.pack(side=tk.LEFT, fill=tk.Y)
 
-        ttk.Button(f, text='run', command=self.run).pack(
+        ttk.Button(f, text='show', command=self.show).pack(
             side=tk.LEFT, padx=5)
 
-        ttk.Button(f, text='clear', command=self.clear).pack(
+        ttk.Button(f, text='edit', command=self.edit).pack(
             side=tk.LEFT, padx=(25, 5))
+
+        ttk.Button(f, text='clear', command=self.clear).pack(
+            side=tk.LEFT, padx=5)
 
         ttk.Button(f, text='reload', command=self.reloadTemplates).pack(
             side=tk.LEFT, padx=5)
@@ -49,7 +53,7 @@ class CodeMake(BaseFrame):
         cb['value'] = self.getTemplates()
         cb.config(state='readonly')
 
-    def run(self):
+    def show(self):
         cb = self.tList
 
         if len(cb.get()) == 0:
@@ -71,3 +75,7 @@ class CodeMake(BaseFrame):
 
     def clear(self):
         clearFrame(self.mid)
+
+    def edit(self):
+        cmd = f'{CODE} {TEMPLATE_PATH}/{self.tList.get()}'
+        os.popen(cmd)
